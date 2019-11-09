@@ -53,8 +53,8 @@ db = SQLAlchemy(app)
 class Userinfo(db.Model, UserMixin):
     myid = db.Column(db.Integer, primary_key=True)
     myusername = db.Column(db.String, unique=True, nullable=False)
-    mypassword = db.Column(db.String, unique=True, nullable=False)
-    twofactorbro = db.Column(db.String, unique=True, nullable=True)
+    mypassword = db.Column(db.String, nullable=False)
+    twofactorbro = db.Column(db.String, unique=False, nullable=True)
     #    myinputquery = db.Column(db.String, unique=True, nullable=True)
  #   myoutputquery = db.Column(db.String, unique=True, nullable=True)
 
@@ -123,12 +123,12 @@ csrf.init_app(app)
 def register():
     if request.method == 'POST':
         enc_pass = bcrypt.generate_password_hash(request.form['password'])
-        #print(request.form['password'],enc_pass)
+        print(request.form['password'],enc_pass)
         my_registered_user = Userinfo.query.filter_by(myusername=request.form['username']).first()
         if my_registered_user is not None:
             flash('Username exists' , 'error')
             return redirect(url_for('register'))
-        #my_registered_user_two = Userinfo.query.filter_by(twofactorbro=request.form['twoFactor']).first()
+        my_registered_user_two = Userinfo.query.filter_by(twofactorbro=request.form['twoFactor']).first()
        # if my_registered_user_two is not None:
         #    flash('2fa is in use, are you already registered? Please relogin' , 'error')
          #   return redirect(url_for('register'))
@@ -146,7 +146,7 @@ def register():
         user = Userinfo(myusername=request.form['username'], mypassword=enc_pass,twofactorbro=request.form['twoFactor'])
         db.session.add(user)
         db.session.commit()
-        flash('Registered Successfully, Please Login')
+        flash('successs')
 
         '''with open('Login.txt', 'r') as file:
             for line in file:
@@ -204,9 +204,10 @@ def login():
     # error = None
     #isauthenticated = False
     if request.method == 'POST':
-        enc_pass = bcrypt.generate_password_hash(request.form['password'])
-        
-        
+        enc_pass = bcrypt.generate_password_hash(request.form['password'])        
+        if enc_pass is None:
+            flash('Username or Password is invalid' , 'error')
+            return redirect(url_for('login')
         inputuser=request.form['username']
         myuser = db.session.query(Userinfo).filter(Userinfo.myusername==request.form['username']).first()
         enc_pass_a = bcrypt.check_password_hash(enc_pass, myuser.mypassword)
@@ -228,7 +229,7 @@ def login():
         update_logs = logstime(loggeduser=request.form['username'],lastlogintime=datetime.now())
         db.session.add(update_logs)
         db.session.commit()
-        #print(update_logs)
+        print(update_logs)
         flash('Logged in successfully')
         '''with open('Login.txt', 'r') as file:
             for line in file:
@@ -308,7 +309,7 @@ def history():
     if request.method == 'POST':
         if current_user.myusername == 'admin':
             inputuser = request.form['username']
-            #print(inputuser)
+            print(inputuser)
             users = db.session.query(queryinfo, Userinfo).join(Userinfo).filter_by(myusername=inputuser)
             return render_template('history.html', posts=users)
     if request.method == 'GET':
@@ -336,14 +337,16 @@ def query_history(query_number):
             return render_template('history.html',posts=the_post)
         if current_user.myusername == 'admin':
             inputuser = request.form['username']
-            #print(inputuser)
+            print(inputuser)
             the_post = db.session.query(queryinfo, Userinfo).filter_by(myidtwo=query_number).join(Userinfo).filter_by(myusername=inputuser)
             return render_template('history.html',posts=the_post)
     #print(query_number)<--major key without this i wouldnt have understood what i was doing.
     if request.method == 'GET':
         if current_user.myusername == 'admin':
             the_post = db.session.query(queryinfo, Userinfo).filter_by(myidtwo=query_number).join(Userinfo).all()
-            return render_template('history.html',posts=the_post)
+        else:
+        	the_post = db.session.query(queryinfo, Userinfo).filter_by(myidtwo=query_number).join(Userinfo).filter_by(myusername=current_user.myusername)
+        return render_template('history.html',posts=the_post)
 
     #return render_template('history.html')
     #f'<h1>Query Bro </h1><p> Username: { current_user.myusername } { the_post.myinputquery}</p>'
@@ -357,7 +360,7 @@ def loginhistory():
     if request.method == 'POST':
         if current_user.myusername == 'admin':
             inputuser = request.form['username']
-            #print(inputuser)
+            print(inputuser)
             users = db.session.query(logstime).filter(logstime.loggeduser==inputuser)
             #users = db.session.query(logstime).join(Userinfo).filter(Userinfo.myusername==inputuser)
     #print(users)

@@ -206,8 +206,8 @@ def login():
     if request.method == 'POST':
         enc_pass = bcrypt.generate_password_hash(request.form['password'])        
         if enc_pass is None:
-            flash('Username or Password is invalid' , 'error')
-            return redirect(url_for('login')
+        	flash('Username or Password is invalid' , 'error')
+        	return redirect(url_for('login'))
         inputuser=request.form['username']
         myuser = db.session.query(Userinfo).filter(Userinfo.myusername==request.form['username']).first()
         enc_pass_a = bcrypt.check_password_hash(enc_pass, myuser.mypassword)

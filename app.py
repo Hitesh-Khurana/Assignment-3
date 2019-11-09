@@ -51,10 +51,10 @@ db = SQLAlchemy(app)
 
 
 class Userinfo(db.Model, UserMixin):
-    myid = db.Column(db.Integer, nique=True, primary_key=True)
+    myid = db.Column(db.Integer, primary_key=True)
     myusername = db.Column(db.String, unique=True, nullable=False)
     mypassword = db.Column(db.String, nullable=False)
-    twofactorbro = db.Column(db.String, nullable=True)
+    twofactorbro = db.Column(db.String, unique=False, nullable=True)
     #    myinputquery = db.Column(db.String, unique=True, nullable=True)
  #   myoutputquery = db.Column(db.String, unique=True, nullable=True)
 
@@ -345,7 +345,7 @@ def query_history(query_number):
         if current_user.myusername == 'admin':
             the_post = db.session.query(queryinfo, Userinfo).filter_by(myidtwo=query_number).join(Userinfo).all()
         else:
-        	the_post = db.session.query(queryinfo, Userinfo).filter_by(myidtwo=query_number).join(Userinfo).filter_by(myusername=current_user.myusername)
+            the_post = db.session.query(queryinfo, Userinfo).filter_by(myidtwo=query_number).join(Userinfo).filter_by(myusername=current_user.myusername)
         return render_template('history.html',posts=the_post)
 
     #return render_template('history.html')

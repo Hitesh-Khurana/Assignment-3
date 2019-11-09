@@ -123,7 +123,7 @@ csrf.init_app(app)
 def register():
     if request.method == 'POST':
         enc_pass = bcrypt.generate_password_hash(request.form['password'])
-        print(request.form['password'],enc_pass)
+        #print(request.form['password'],enc_pass)
         my_registered_user = Userinfo.query.filter_by(myusername=request.form['username']).first()
         if my_registered_user is not None:
             flash('Username exists' , 'error')
@@ -228,7 +228,7 @@ def login():
         update_logs = logstime(loggeduser=request.form['username'],lastlogintime=datetime.now())
         db.session.add(update_logs)
         db.session.commit()
-        print(update_logs)
+        #print(update_logs)
         flash('Logged in successfully')
         '''with open('Login.txt', 'r') as file:
             for line in file:
@@ -308,7 +308,7 @@ def history():
     if request.method == 'POST':
         if current_user.myusername == 'admin':
             inputuser = request.form['username']
-            print(inputuser)
+            #print(inputuser)
             users = db.session.query(queryinfo, Userinfo).join(Userinfo).filter_by(myusername=inputuser)
             return render_template('history.html', posts=users)
     if request.method == 'GET':
@@ -336,7 +336,7 @@ def query_history(query_number):
             return render_template('history.html',posts=the_post)
         if current_user.myusername == 'admin':
             inputuser = request.form['username']
-            print(inputuser)
+            #print(inputuser)
             the_post = db.session.query(queryinfo, Userinfo).filter_by(myidtwo=query_number).join(Userinfo).filter_by(myusername=inputuser)
             return render_template('history.html',posts=the_post)
     #print(query_number)<--major key without this i wouldnt have understood what i was doing.
@@ -357,7 +357,7 @@ def loginhistory():
     if request.method == 'POST':
         if current_user.myusername == 'admin':
             inputuser = request.form['username']
-            print(inputuser)
+            #print(inputuser)
             users = db.session.query(logstime).filter(logstime.loggeduser==inputuser)
             #users = db.session.query(logstime).join(Userinfo).filter(Userinfo.myusername==inputuser)
     #print(users)

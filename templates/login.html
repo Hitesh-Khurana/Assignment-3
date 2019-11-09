@@ -1,0 +1,24 @@
+<html> 
+       <h1>Login</h1>
+       {% with messages = get_flashed_messages() %}
+       {% if messages %}
+        {% for message in messages %}
+        <p id=result name='result' type='text'>{{ message }}</p>
+        {% endfor %}
+         {% endif %}
+        {% endwith %}
+        {% block body %}{% endblock %}
+      <form action="" id="inputtext" method="post">
+        <label for="uname">Username: </label>
+        <input id="uname" placeholder="Username" name="username" type="text" value="{{request.form.username }}" required>
+        <label for="userPassword">Password: </label>
+        <input id="pword" type="password" name="password" placeholder="Password" value="{{request.form.password }}" required>
+        <label for="twofactor">2FA: </label>
+        <input id="2fa" type="text" name="twoFactor" placeholder="Phone" value="{{request.form.twoFactor }}">
+        <input class="btn btn-default" type="submit" value="Login">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      </form>
+  </body>
+</html>
+
+

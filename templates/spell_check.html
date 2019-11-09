@@ -1,0 +1,28 @@
+<html>
+    <div class="container">
+   
+      <h1>Login was Successful!</h1>
+       <h2>Submit the Word</h2>
+   {% with messages = get_flashed_messages() %}
+       {% if messages %}
+       <ul class=flashes>
+        {% for message in messages %}
+        <li id=result>{{ message }}</li>
+        {% endfor %}
+         {% endif %}
+        {% endwith %}
+        {% block body %}{% endblock %}
+      <br>
+      <form action="" id="inputform" method="post">
+        <label for="uname">Word: </label>
+        <input id="inputtext" placeholder="Word(s)" name="word" type="text" value="{{request.form.word }}">
+       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+       <input class="btn btn-default" type="submit" value="Submit">
+      </form>
+    </div>
+       <label for="mis"> <b>These are the misspelled words: </b></label>
+       <p id="misspelled" placeholder="Word(s)" name="word" type="text">{{ bruhthemisspelledwords }}</p>
+        <label for="mis"> <b>These was the original input:</b></label>
+       <p id="textout" placeholder="Word(s)" name="word" type="text">{{ bruhtheinput }}</p>
+  </body>
+</html>

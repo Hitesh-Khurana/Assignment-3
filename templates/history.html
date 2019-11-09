@@ -1,0 +1,38 @@
+<html>
+        <form action="" id="inputtext" method="post">
+                <label for="uname"  >Username: </label>
+                <input id="userquery" placeholder="Username" name="username" type="text" value="{{request.form.username }}">
+                <input class="btn btn-default" type="submit" value="Submit">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        </form>
+        
+<table class="centered thick-border">
+        <tr>
+                <th> | Query number | </th>
+                <th> | Username | </th>
+                <th> | Input | </th>
+                <th> | Misspelled words</th>
+                        {% set loopCount = 0 %}
+                        {% set countbro = 0 %}
+
+        </tr>
+        {% for user in posts %}
+                <tr> 
+                        <td><a href="/history/query{{user.queryinfo.myidtwo}}" id="query{{ user.queryinfo.myidtwo }}"> | {{ user.queryinfo.myidtwo }} | </a></td>
+                        <p id="username"><td > | {{ user.Userinfo.myusername }} | </td></p>
+                        <p id="querytext"><td > | {{ user.queryinfo.myinputquery }} | </td></p>
+                        <p id="queryresults"><td> | {{ user.queryinfo.myoutputquery }} | </td></p>
+                        {% set countbro = loop.length + countbro  %}
+                        {%- if loop.revindex == loop.length-%}
+                          <h1> total number of queries</h1> 
+                        <p id=numqueries>{{ countbro }}</p>
+                         {%- endif %}
+      
+                </tr>
+
+        {% endfor %}
+
+        
+
+</table>
+</html> 

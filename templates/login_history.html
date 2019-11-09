@@ -1,0 +1,26 @@
+<html>
+        <form action="" id="inputtext" method="post">
+                <label for="uname"  >Username: </label>
+                <input id="userid" placeholder="Username" name="username" type="text" value="{{request.form.username }}">
+                <input class="btn btn-default" type="submit" value="Submit">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        </form>
+
+<table class="centered thick-border">
+        <tr>
+                <th> | Log # | </th>
+                <th> | Username | </th>
+                <th> | Login Time | </th>
+                <th> | Logout time</th>
+        </tr>
+
+        {% for user in posts %}
+                <tr> 
+                        <p id="login{{ user.myidthree }}"> ><td> | {{ user.myidthree }} | </td></p>
+                        <p><td> | {{ user.loggeduser }} | </td></p>
+                        <p id="login{{ user.myidthree }}_time"> <td > | {{ user.lastlogintime }} | </td></p>
+                        <p id="logout{{ user.myidthree }}_time"><td > | {{ user.lastlogouttime }} | </td></p>
+                </tr>
+        {% endfor %}
+</table>
+</html> 

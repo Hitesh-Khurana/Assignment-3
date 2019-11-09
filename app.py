@@ -54,7 +54,7 @@ class Userinfo(db.Model, UserMixin):
     myid = db.Column(db.Integer, primary_key=True)
     myusername = db.Column(db.String, unique=True, nullable=False)
     mypassword = db.Column(db.String, nullable=False)
-    twofactorbro = db.Column(db.String, unique=False, nullable=True)
+    twofactorbro = db.Column(db.String, nullable=True)
     #    myinputquery = db.Column(db.String, unique=True, nullable=True)
  #   myoutputquery = db.Column(db.String, unique=True, nullable=True)
 

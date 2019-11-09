@@ -129,9 +129,9 @@ def register():
             flash('Username exists' , 'error')
             return redirect(url_for('register'))
         my_registered_user_two = Userinfo.query.filter_by(twofactorbro=request.form['twoFactor']).first()
-        if my_registered_user_two is not None:
-            flash('2fa is in use, are you already registered? Please relogin' , 'error')
-            return redirect(url_for('register'))
+       # if my_registered_user_two is not None:
+        #    flash('2fa is in use, are you already registered? Please relogin' , 'error')
+         #   return redirect(url_for('register'))
         if request.form['twoFactor'] == '':
             pass
         elif not request.form['twoFactor'].isdigit():

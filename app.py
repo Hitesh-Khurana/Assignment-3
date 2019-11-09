@@ -146,7 +146,7 @@ def register():
         user = Userinfo(myusername=request.form['username'], mypassword=enc_pass,twofactorbro=request.form['twoFactor'])
         db.session.add(user)
         db.session.commit()
-        flash('Registered Successfully, Please Login')
+        flash('success')
 
         '''with open('Login.txt', 'r') as file:
             for line in file:

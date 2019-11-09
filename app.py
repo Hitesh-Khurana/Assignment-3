@@ -128,7 +128,7 @@ def register():
         if my_registered_user is not None:
             flash('Username exists' , 'error')
             return redirect(url_for('register'))
-        my_registered_user_two = Userinfo.query.filter_by(twofactorbro=request.form['twoFactor']).first()
+        #my_registered_user_two = Userinfo.query.filter_by(twofactorbro=request.form['twoFactor']).first()
        # if my_registered_user_two is not None:
         #    flash('2fa is in use, are you already registered? Please relogin' , 'error')
          #   return redirect(url_for('register'))
@@ -146,7 +146,7 @@ def register():
         user = Userinfo(myusername=request.form['username'], mypassword=enc_pass,twofactorbro=request.form['twoFactor'])
         db.session.add(user)
         db.session.commit()
-        flash('success')
+        flash('Registered Successfully, Please Login')
 
         '''with open('Login.txt', 'r') as file:
             for line in file:

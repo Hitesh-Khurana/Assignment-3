@@ -46,13 +46,14 @@ app.config['SESSION_USE_SIGNER'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
 db = SQLAlchemy(app)
-regex = re.compile('[@_!#$%^&*()<>?/\|}{~:]') #<----This line i am referencing.
+regex = re.compile('[@!#$%^&*()<>?/\|}{~:]') #<----This line i am referencing.
 # Using this regex format
 # I got this line and the idea to use this in a custom way to check for user input. 
 # The four lines referenced below is my adaptation to use this in my code That I use to sanitize input in my code.
 # I would like to reference this link below and give credit. This was a last minute addition to rule out all sql injections.
 # https://www.geeksforgeeks.org/python-program-check-string-contains-special-character/
 #  Also referencing this ---->           if not (regex.search(checkuserspecial) == None):
+# I had to remove _ so that xsrf_test can register.
                
 
 

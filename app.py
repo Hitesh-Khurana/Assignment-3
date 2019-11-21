@@ -18,7 +18,7 @@ from sqlalchemy import Column, Integer, DateTime
 import bcrypt
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_bcrypt import Bcrypt
-
+import re
 
 
 #secret_key = 'test'
@@ -46,8 +46,14 @@ app.config['SESSION_USE_SIGNER'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
 db = SQLAlchemy(app)
-
-
+regex = re.compile('[@_!#$%^&*()<>?/\|}{~:]') #<----This line i am referencing.
+# Using this regex format
+# I got this line and the idea to use this in a custom way to check for user input. 
+# The four lines referenced below is my adaptation to use this in my code That I use to sanitize input in my code.
+# I would like to reference this link below and give credit. This was a last minute addition to rule out all sql injections.
+# https://www.geeksforgeeks.org/python-program-check-string-contains-special-character/
+#  Also referencing this ---->           if not (regex.search(checkuserspecial) == None):
+               
 
 
 class Userinfo(db.Model, UserMixin):
@@ -122,6 +128,10 @@ csrf.init_app(app)
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
+        checkuserspecial = request.form['username']
+        if not (regex.search(checkuserspecial) == None):
+            flash('Username has special Characters bro, try again.')
+            return redirect(url_for('register'))
         enc_pass = bcrypt.generate_password_hash(request.form['password'])
         print(request.form['password'],enc_pass)
         my_registered_user = Userinfo.query.filter_by(myusername=request.form['username']).first()
@@ -204,6 +214,10 @@ def login():
     # error = None
     #isauthenticated = False
     if request.method == 'POST':
+        checkuserspecial = request.form['username']
+        if not (regex.search(checkuserspecial) == None):
+            flash('Username has special Characters bro, try again.')
+            return redirect(url_for('login'))
         enc_pass = bcrypt.generate_password_hash(request.form['password'])        
         inputuser=request.form['username']
         myuser = db.session.query(Userinfo).filter(Userinfo.myusername==request.form['username']).first()
@@ -308,19 +322,26 @@ def history():
     #users = db.session.query(queryinfo).all()
     if request.method == 'POST':
         if current_user.myusername == 'admin':
+            checkuserspecial = request.form['username']
+            if not (regex.search(checkuserspecial) == None):
+                flash('Username has special Characters bro, try again.')
+                return redirect(url_for('history'))            
             inputuser = request.form['username']
             print(inputuser)
             users = db.session.query(queryinfo, Userinfo).join(Userinfo).filter_by(myusername=inputuser)
             return render_template('history.html', posts=users)
+        else:#if not current_user.myusername == 'admin':
+            users = db.session.query(queryinfo, Userinfo).join(Userinfo).filter_by(myusername=current_user.myusername)
+            return render_template('history.html',posts=users)
     if request.method == 'GET':
         if current_user.myusername == 'admin':
             users = db.session.query(queryinfo, Userinfo).join(Userinfo).all()
         #for post in users:
         #print (post.myinputquery, post.myoutputquery)
-            return render_template('history.html',posts=users)
-        if not current_user.myusername == 'admin':
+           # return render_template('history.html',posts=users)
+        else:#if not current_user.myusername == 'admin':
             users = db.session.query(queryinfo, Userinfo).join(Userinfo).filter_by(myusername=current_user.myusername)
-            return render_template('history.html',posts=users)
+        return render_template('history.html',posts=users)
     
 
 #return f'<h1>The user is located in: {post.myinputquery, post.myoutputquery}</h1>'
@@ -336,6 +357,10 @@ def query_history(query_number):
             the_post = db.session.query(queryinfo, Userinfo).filter_by(myidtwo=query_number).join(Userinfo).filter_by(myusername=current_user.myusername)
             return render_template('history.html',posts=the_post)
         if current_user.myusername == 'admin':
+            checkuserspecial = request.form['username']
+            if not (regex.search(checkuserspecial) == None):
+                flash('Username has special Characters bro, try again.')
+                return redirect(url_for('history'))     
             inputuser = request.form['username']
             print(inputuser)
             the_post = db.session.query(queryinfo, Userinfo).filter_by(myidtwo=query_number).join(Userinfo).filter_by(myusername=inputuser)
@@ -359,6 +384,10 @@ def query_history(query_number):
 def loginhistory():
     if request.method == 'POST':
         if current_user.myusername == 'admin':
+            checkuserspecial = request.form['username']
+            if not (regex.search(checkuserspecial) == None):
+                flash('Username has special Characters bro, try again.')
+                return redirect(url_for('history'))                 
             inputuser = request.form['username']
             print(inputuser)
             users = db.session.query(logstime).filter(logstime.loggeduser==inputuser)
@@ -376,4 +405,4 @@ def loginhistory():
 
 if __name__ == '__main__':
     db.create_all()
-    app.run(debug=True, host= '0.0.0.0')
+    app.run(host= '0.0.0.0')

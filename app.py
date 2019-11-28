@@ -26,6 +26,16 @@ import re
 app = Flask(__name__, static_folder='static')
 bcrypt = Bcrypt(app)
 
+# read the secrets file
+# once we do this we can call the run/secrets/secret.key to call it
+#os.environ
+# = open("/path").read()
+# write a function insert admin user, to go through the registration portion and create this in the code. and do this before app.run.
+# app.py before if name = main app.run
+# insert a value into your database., create a user
+# manually assign the admin user in the database, 
+# administrator password  can be anything, 
+# admin user is the user that is expected to be created 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -221,13 +231,19 @@ def login():
             return redirect(url_for('login'))
         enc_pass = bcrypt.generate_password_hash(request.form['password'])        
         inputuser=request.form['username']
-        myuser = db.session.query(Userinfo).filter(Userinfo.myusername==request.form['username']).first()
+        myuser = db.session.query(Userinfo).filter(Userinfo.myusername==inputuser).first()
         if myuser is None:
             enc_pass_a = None
         else:
-            enc_pass_a = bcrypt.check_password_hash(enc_pass, myuser.mypassword)
+            enc_pass_a = bcrypt.check_password_hash(myuser.mypassword, request.form['password'])
+            print(request.form['password'],enc_pass,enc_pass_a)
         if enc_pass_a is None:
             flash('Username or Password is invalid' , 'error')
+            print(request.form['password'],enc_pass,enc_pass_a)
+            return redirect(url_for('login'))
+        if enc_pass_a is False:
+            flash('Username or Password is invalid' , 'error')
+            print(request.form['password'],enc_pass,enc_pass_a)
             return redirect(url_for('login'))
         #print(myuser)
         #print(request.form['password'],enc_pass,enc_pass_a)
